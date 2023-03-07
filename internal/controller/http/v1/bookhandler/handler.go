@@ -17,7 +17,7 @@ const (
 	_delete   = "/v1/delete"
 )
 
-func InitHandlers(
+func AddHandlersToMux(
 	book usecase.Book,
 	mux *http.ServeMux,
 	logger log.Interface,

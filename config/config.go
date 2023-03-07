@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
@@ -19,8 +20,9 @@ type (
 	}
 
 	HTTP struct {
-		Port   string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
-		MaxPRS int    `env-required:"true" yaml:"max_rps" env:"HTTP_MAX_RPS"`
+		Port     string        `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		MaxPRS   int           `env-required:"true" yaml:"max_rps" env:"HTTP_MAX_RPS"`
+		Duration time.Duration `env-required:"true" yaml:"duration" env:"HTTP_DURATION"`
 	}
 
 	Log struct {

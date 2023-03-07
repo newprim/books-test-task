@@ -10,10 +10,15 @@ import (
 
 // NewRejectionThrottling создаёт миддлвейер, который при превышении переданного
 // RPS отклоняет входящие запросы.
-func NewRejectionThrottling(ctx context.Context, maxRPS int) func(root http.Handler) http.Handler {
+func NewRejectionThrottling(
+	ctx context.Context,
+	maxRatePerDuration int,
+	duration time.Duration,
+) func(root http.Handler) http.Handler {
 	var (
-		ticker  = time.NewTicker(time.Second)
+		ticker  = time.NewTicker(duration)
 		counter atomic.Int64
+		maxRPD  = int64(maxRatePerDuration)
 	)
 
 	go func() {
@@ -34,7 +39,7 @@ func NewRejectionThrottling(ctx context.Context, maxRPS int) func(root http.Hand
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			newCounterVal := counter.Inc()
-			if newCounterVal > int64(maxRPS) {
+			if newCounterVal > maxRPD {
 				w.WriteHeader(http.StatusTooManyRequests)
 				return
 			}

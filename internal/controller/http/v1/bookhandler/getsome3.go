@@ -3,7 +3,11 @@ package bookhandler
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/newprim/books-test-task/internal/entity"
 )
+
+const _getSome3NeededCount = 3
 
 func (h *Handlers) GetSome3(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -13,30 +17,16 @@ func (h *Handlers) GetSome3(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	const (
-		neededCount = 3
-		handler     = "GetSome3"
-	)
+	const handler = _getSome3
 
-	firstBooks, err := h.book.GetSome(r.Context(), neededCount)
+	firstBooks, err := h.book.GetSome(r.Context(), _getSome3NeededCount)
 	if err != nil {
 		h.l.Error("getting books on %s: %v", handler, err)
 		http.Error(w, "getting some books: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	respData := getResponse{
-		Books: make([]book, 0, len(firstBooks)),
-	}
-	for _, b := range firstBooks {
-		respData.Books = append(respData.Books, book{
-			ID:            b.ID,
-			Title:         b.Title,
-			Author:        b.Author,
-			PublisherYear: b.PublisherYear,
-		})
-	}
-
+	respData := getSome3DataRepack(firstBooks)
 	marshaled, err := json.Marshal(respData)
 	if err != nil {
 		h.l.Error("marshaling response on %s: %v", handler, err)
@@ -65,6 +55,21 @@ func (h *Handlers) validateGetSome3(r *http.Request) (bool, int) {
 	// }
 
 	return true, http.StatusOK
+}
+
+func getSome3DataRepack(books []entity.Book) getResponse {
+	result := getResponse{
+		Books: make([]book, 0, len(books)),
+	}
+	for _, b := range books {
+		result.Books = append(result.Books, book{
+			ID:            b.ID,
+			Title:         b.Title,
+			Author:        b.Author,
+			PublisherYear: b.PublisherYear,
+		})
+	}
+	return result
 }
 
 type getResponse struct {
