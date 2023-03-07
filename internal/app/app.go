@@ -37,7 +37,7 @@ func run(cfg config.Config, logger log.Interface) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	throtMid := middlewares.NewRejectionThrottling(ctx, cfg.HTTP.MaxPRS, cfg.HTTP.Duration)
+	throtMid := middlewares.NewRejectionThrottling(ctx, cfg.HTTP.MaxPRD, cfg.HTTP.Duration)
 	handler := http.NewServeMux()
 	bookhandler.AddHandlersToMux(bookUseCase, handler, logger, throtMid)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))

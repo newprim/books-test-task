@@ -9,19 +9,13 @@ import (
 
 type (
 	Config struct {
-		App  `yaml:"app"`
 		HTTP `yaml:"http"`
 		Log  `yaml:"logger"`
 	}
 
-	App struct {
-		Name    string `env-required:"true" yaml:"name"    env:"APP_NAME"`
-		Version string `env-required:"true" yaml:"version" env:"APP_VERSION"`
-	}
-
 	HTTP struct {
 		Port     string        `env-required:"true" yaml:"port" env:"HTTP_PORT"`
-		MaxPRS   int           `env-required:"true" yaml:"max_rps" env:"HTTP_MAX_RPS"`
+		MaxPRD   int           `env-required:"true" yaml:"max_rpd" env:"HTTP_MAX_RPD"`
 		Duration time.Duration `env-required:"true" yaml:"duration" env:"HTTP_DURATION"`
 	}
 
