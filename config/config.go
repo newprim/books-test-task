@@ -19,7 +19,8 @@ type (
 	}
 
 	HTTP struct {
-		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		Port   string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		MaxPRS int    `env-required:"true" yaml:"max_rps" env:"HTTP_MAX_RPS"`
 	}
 
 	Log struct {

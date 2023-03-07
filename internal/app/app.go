@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"github.com/newprim/books-test-task/internal/usecase"
 	"github.com/newprim/books-test-task/pkg/httpserver"
 	"github.com/newprim/books-test-task/pkg/log"
+	"github.com/newprim/books-test-task/pkg/middlewares"
 )
 
 func Run(cfg config.Config) {
@@ -32,8 +34,12 @@ func run(cfg config.Config, logger log.Interface) error {
 
 	bookUseCase := usecase.NewBookUseCase(booksRep)
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	throtMid := middlewares.NewRejectionThrottling(ctx, cfg.HTTP.MaxPRS)
 	handler := http.NewServeMux()
-	bookhandler.InitHandlers(bookUseCase, handler, logger)
+	bookhandler.InitHandlers(bookUseCase, handler, logger, throtMid)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	interrupt := make(chan os.Signal, 1)

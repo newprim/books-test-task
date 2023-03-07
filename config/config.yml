@@ -4,6 +4,7 @@ app:
 
 http:
   port: '8080'
+  max_rps: 10
 
 logger:
   log_level: 'debug'

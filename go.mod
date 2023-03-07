@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/ilyakaznacheev/cleanenv v1.4.2
 	github.com/rs/zerolog v1.29.0
+	go.uber.org/atomic v1.10.0
 )
 
 require (

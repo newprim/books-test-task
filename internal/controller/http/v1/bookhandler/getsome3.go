@@ -55,13 +55,14 @@ func (h *Handlers) validateGetSome3(r *http.Request) (bool, int) {
 		return false, http.StatusMethodNotAllowed
 	}
 
-	if contentType := r.Header.Get("Content-Type"); contentType != "application/json" {
-		return false, http.StatusUnsupportedMediaType
-	}
-
-	if accept := r.Header.Get("Accept"); accept != "application/json" {
-		return false, http.StatusNotAcceptable
-	}
+	// В задании сказано принимать эти заголовки, но если мы не парсим тело - незачем это делать.
+	// if contentType := r.Header.Get("Content-Type"); contentType != "application/json" {
+	// 	return false, http.StatusUnsupportedMediaType
+	// }
+	//
+	// if accept := r.Header.Get("Accept"); accept != "application/json" {
+	// 	return false, http.StatusNotAcceptable
+	// }
 
 	return true, http.StatusOK
 }
