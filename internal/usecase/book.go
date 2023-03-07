@@ -11,6 +11,8 @@ type BookUseCase struct {
 	rep BookRepository
 }
 
+var _ Book = (*BookUseCase)(nil)
+
 func (b *BookUseCase) Get(ctx context.Context, id int) (entity.Book, error) {
 	bookDTO, err := b.rep.Get(ctx, id)
 	if err != nil {
