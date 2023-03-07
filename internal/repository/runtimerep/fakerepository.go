@@ -1,4 +1,4 @@
-package runtime
+package runtimerep
 
 import (
 	"context"
@@ -16,7 +16,11 @@ type FakeRepository struct {
 
 var _ usecase.BookRepository = (*FakeRepository)(nil)
 
-func NewFakeRepository(countOfBooks int) *FakeRepository {
+func NewFakeRepository(countOfBooks int) (*FakeRepository, error) {
+	if countOfBooks < 0 {
+		return nil, fmt.Errorf("books count is less than 0: %d", countOfBooks)
+	}
+
 	cache := make(map[int]dto.Book, countOfBooks)
 	for i := 0; i < countOfBooks; i++ {
 		strI := strconv.Itoa(i)
@@ -30,7 +34,7 @@ func NewFakeRepository(countOfBooks int) *FakeRepository {
 
 	return &FakeRepository{
 		cache: runtime.NewMutexMapFilled(cache),
-	}
+	}, nil
 }
 
 func (c *FakeRepository) Get(_ context.Context, id int) (dto.Book, error) {
@@ -47,6 +51,9 @@ func (c *FakeRepository) GetRandomN(_ context.Context, n int) ([]dto.Book, error
 }
 
 func (c *FakeRepository) Delete(_ context.Context, id int) error {
-	c.cache.Delete(id)
+	if deleted := c.cache.DeleteIfExist(id); !deleted {
+		return fmt.Errorf("no rows in result set")
+	}
+
 	return nil
 }

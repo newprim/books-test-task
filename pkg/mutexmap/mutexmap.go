@@ -53,8 +53,13 @@ func (m *MutexMap[K, V]) Set(k K, v V) {
 	m.mu.Unlock()
 }
 
-func (m *MutexMap[K, V]) Delete(k K) {
+func (m *MutexMap[K, V]) DeleteIfExist(k K) (isDeleted bool) {
 	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if _, ok := m.mp[k]; !ok {
+		return false
+	}
 	delete(m.mp, k)
-	m.mu.Unlock()
+	return true
 }

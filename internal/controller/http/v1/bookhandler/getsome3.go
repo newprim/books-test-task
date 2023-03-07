@@ -1,4 +1,4 @@
-package books
+package bookhandler
 
 import (
 	"encoding/json"
@@ -8,15 +8,19 @@ import (
 func (h *Handlers) GetSome3(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	if isValid, code := h.validateGetFirst3(r); !isValid {
+	if isValid, code := h.validateGetSome3(r); !isValid {
 		http.Error(w, "validation error", code)
 		return
 	}
 
-	const neededCount = 3
+	const (
+		neededCount = 3
+		handler     = "GetSome3"
+	)
 
 	firstBooks, err := h.book.GetSome(r.Context(), neededCount)
 	if err != nil {
+		h.l.Error("getting books on %s: %v", handler, err)
 		http.Error(w, "getting some books: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -35,17 +39,18 @@ func (h *Handlers) GetSome3(w http.ResponseWriter, r *http.Request) {
 
 	marshaled, err := json.Marshal(respData)
 	if err != nil {
+		h.l.Error("marshaling response on %s: %v", handler, err)
 		http.Error(w, "marshaling: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if _, err = w.Write(marshaled); err != nil {
-		// todo логировать?
+		h.l.Error("writing response on %s: %v", handler, err)
 	}
 }
 
-func (h *Handlers) validateGetFirst3(r *http.Request) (bool, int) {
+func (h *Handlers) validateGetSome3(r *http.Request) (bool, int) {
 	if r.Method != http.MethodGet {
 		return false, http.StatusMethodNotAllowed
 	}

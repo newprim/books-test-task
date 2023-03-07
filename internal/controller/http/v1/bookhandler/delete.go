@@ -1,4 +1,4 @@
-package books
+package bookhandler
 
 import (
 	"encoding/json"
@@ -8,6 +8,7 @@ import (
 
 func (h *Handlers) Delete(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+	const handler = _delete
 
 	if isValid, code := h.validateDelete(r); !isValid {
 		http.Error(w, "validation error", code)
@@ -16,17 +17,20 @@ func (h *Handlers) Delete(w http.ResponseWriter, r *http.Request) {
 
 	rawReq, err := io.ReadAll(r.Body)
 	if err != nil {
+		h.l.Error("reading request books on %s: %v", handler, err)
 		http.Error(w, "reading request: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var req deleteRequest
 	if err = json.Unmarshal(rawReq, &req); err != nil {
+		h.l.Error("marshaling response on %s: %v", handler, err)
 		http.Error(w, "unmarshaling: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err = h.book.Delete(r.Context(), req.BookId); err != nil {
+		h.l.Error("deleting book on %s: %v", handler, err)
 		http.Error(w, "deleting: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
