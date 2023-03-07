@@ -1,0 +1,7 @@
+http:
+  port: '8080'
+  max_rps: 10
+  duration: '1s'
+
+logger:
+  log_level: 'debug'
