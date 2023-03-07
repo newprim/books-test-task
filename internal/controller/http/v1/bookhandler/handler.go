@@ -17,9 +17,13 @@ const (
 	_delete   = "/v1/delete"
 )
 
+type Mux interface {
+	Handle(pattern string, handler http.Handler)
+}
+
 func AddHandlersToMux(
 	book usecase.Book,
-	mux *http.ServeMux,
+	mux Mux,
 	logger log.Interface,
 	throtMid func(root http.Handler) http.Handler,
 ) {
