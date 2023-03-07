@@ -14,7 +14,7 @@ type Book interface {
 	Delete(ctx context.Context, id int) error
 }
 
-// BookRepository представляет интерфейс для работы с entity.Book в репозитории.
+// BookRepository представляет интерфейс для получения данных из репозитория.
 type BookRepository interface {
 	Get(ctx context.Context, id int) (dto.Book, error)
 	GetRandomN(ctx context.Context, n int) ([]dto.Book, error)

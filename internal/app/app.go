@@ -54,7 +54,6 @@ func run(cfg config.Config, logger log.Interface) error {
 		logger.Error("server notifies: %v", err)
 	}
 
-	// Shutdown
 	err = httpServer.Shutdown()
 	if err != nil {
 		logger.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))

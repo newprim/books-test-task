@@ -9,23 +9,10 @@ type MutexMap[K comparable, V any] struct {
 	mu sync.RWMutex
 }
 
-func NewMutexMap[K comparable, V any]() *MutexMap[K, V] {
-	return &MutexMap[K, V]{
-		mp: make(map[K]V),
-	}
-}
-
 func NewMutexMapFilled[K comparable, V any](mp map[K]V) *MutexMap[K, V] {
 	return &MutexMap[K, V]{
 		mp: mp,
 	}
-}
-
-func (m *MutexMap[K, V]) Get(k K) V {
-	m.mu.RLock()
-	v := m.mp[k]
-	m.mu.RUnlock()
-	return v
 }
 
 func (m *MutexMap[K, V]) GetOK(k K) (V, bool) {

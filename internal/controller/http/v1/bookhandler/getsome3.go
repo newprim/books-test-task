@@ -26,7 +26,7 @@ func (h *Handlers) GetSome3(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respData := getSome3DataRepack(firstBooks)
+	respData := getSome3RepackToResponseDTO(firstBooks)
 	marshaled, err := json.Marshal(respData)
 	if err != nil {
 		h.l.Error("marshaling response on %s: %v", handler, err)
@@ -57,12 +57,12 @@ func (h *Handlers) validateGetSome3(r *http.Request) (bool, int) {
 	return true, http.StatusOK
 }
 
-func getSome3DataRepack(books []entity.Book) getResponse {
-	result := getResponse{
-		Books: make([]book, 0, len(books)),
+func getSome3RepackToResponseDTO(books []entity.Book) getSome3Response {
+	result := getSome3Response{
+		Books: make([]getSome3Book, 0, len(books)),
 	}
 	for _, b := range books {
-		result.Books = append(result.Books, book{
+		result.Books = append(result.Books, getSome3Book{
 			ID:            b.ID,
 			Title:         b.Title,
 			Author:        b.Author,
@@ -72,11 +72,11 @@ func getSome3DataRepack(books []entity.Book) getResponse {
 	return result
 }
 
-type getResponse struct {
-	Books []book `json:"books"`
+type getSome3Response struct {
+	Books []getSome3Book `json:"books"`
 }
 
-type book struct {
+type getSome3Book struct {
 	ID            int    `json:"id"`
 	Title         string `json:"title"`
 	Author        string `json:"author"`

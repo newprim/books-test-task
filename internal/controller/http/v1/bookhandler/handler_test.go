@@ -87,7 +87,7 @@ func TestHandlers(t *testing.T) {
 			},
 		},
 		{
-			name: _delete + "correctAfterWait", // пятый тест в таблице, RPS настроен на 4
+			name: _delete + "correctAfterWait",
 			params: params{
 				method:       http.MethodDelete,
 				path:         _delete,
@@ -133,9 +133,11 @@ func TestHandlers(t *testing.T) {
 
 func bodyOfGetSome3() string {
 	some, _ := bookMock{rand.New(rand.NewSource(_seed))}.GetSome(nil, _getSome3NeededCount)
-	marshal, _ := json.Marshal(getSome3DataRepack(some))
+	marshal, _ := json.Marshal(getSome3RepackToResponseDTO(some))
 	return string(marshal)
 }
+
+// Mocks
 
 type bookMock struct {
 	rand *rand.Rand
@@ -147,12 +149,12 @@ func (b bookMock) randBook() entity.Book {
 	}
 }
 
-func (b bookMock) Get(ctx context.Context, id int) (entity.Book, error) {
+func (b bookMock) Get(_ context.Context, _ int) (entity.Book, error) {
 	b.rand = rand.New(rand.NewSource(1))
 	return b.randBook(), nil
 }
 
-func (b bookMock) GetSome(ctx context.Context, count int) ([]entity.Book, error) {
+func (b bookMock) GetSome(_ context.Context, count int) ([]entity.Book, error) {
 	result := make([]entity.Book, count)
 	for i := range result {
 		result[i] = b.randBook()
@@ -160,14 +162,14 @@ func (b bookMock) GetSome(ctx context.Context, count int) ([]entity.Book, error)
 	return result, nil
 }
 
-func (b bookMock) Delete(ctx context.Context, id int) error {
+func (b bookMock) Delete(_ context.Context, _ int) error {
 	return nil
 }
 
 type logMock struct{}
 
-func (logMock) Debug(message interface{}, args ...interface{}) {}
-func (logMock) Info(message string, args ...interface{})       {}
-func (logMock) Warn(message string, args ...interface{})       {}
-func (logMock) Error(message interface{}, args ...interface{}) {}
-func (logMock) Fatal(message interface{}, args ...interface{}) {}
+func (logMock) Debug(_ interface{}, _ ...interface{}) {}
+func (logMock) Info(_ string, _ ...interface{})       {}
+func (logMock) Warn(_ string, _ ...interface{})       {}
+func (logMock) Error(_ interface{}, _ ...interface{}) {}
+func (logMock) Fatal(_ interface{}, _ ...interface{}) {}

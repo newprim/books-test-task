@@ -1,7 +1,3 @@
-app:
-  name: 'go-clean-template'
-  version: '1.0.0'
-
 http:
   port: '8080'
   max_rps: 10

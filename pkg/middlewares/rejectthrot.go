@@ -9,7 +9,8 @@ import (
 )
 
 // NewRejectionThrottling создаёт миддлвейер, который при превышении переданного
-// RPS отклоняет входящие запросы.
+// RPD (rate per duration, продолжительность кулдауна задаётся) отклоняет
+// входящие запросы.
 func NewRejectionThrottling(
 	ctx context.Context,
 	maxRatePerDuration int,
