@@ -15,9 +15,9 @@ func (h *Handlers) GetSome3(w http.ResponseWriter, r *http.Request) {
 
 	const neededCount = 3
 
-	firstBooks, err := h.rep.GetSome(r.Context(), neededCount)
+	firstBooks, err := h.book.GetSome(r.Context(), neededCount)
 	if err != nil {
-		http.Error(w, "getting first books: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "getting some books: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

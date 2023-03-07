@@ -26,7 +26,7 @@ func (h *Handlers) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = h.rep.Delete(r.Context(), req.BookId); err != nil {
+	if err = h.book.Delete(r.Context(), req.BookId); err != nil {
 		http.Error(w, "deleting: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
