@@ -54,7 +54,10 @@ func NewWaitThrottling(
 				return
 			case <-r.Context().Done():
 				return
-			case <-passes:
+			case _, ok := <-passes:
+				if !ok {
+					return
+				}
 			}
 
 			next.ServeHTTP(w, r)
